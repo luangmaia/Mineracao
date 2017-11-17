@@ -2,6 +2,7 @@ import BaseHandle
 import csv
 from sklearn import metrics
 import numpy
+import copy
 
 def main():
 	tabela = BaseHandle.base2matrizSemNome('BasePorGenero.txt')
@@ -30,16 +31,37 @@ def main():
 		dados.pop(0)
 		tab = dados
 
+		maior = getMaior(tab, vetorClimaEstados, climasUnicos)
+
 		for elem in tab:
 			if elem:
 				indice = int(elem.pop(0))
 
-				clima = getClima(elem, vetorClimaEstados, climasUnicos)
-				climasAgrupamento[indice] = clima
+				#clima = getClima(elem, vetorClimaEstados, climasUnicos)
+				climasAgrupamento[indice] = maior
 	
 	print (climasAgrupamento)
 
 	print ('Rand: ' + str(metrics.adjusted_rand_score(climas, climasAgrupamento)))
+
+def getMaior(tab, vetorClimaEstados, climasUnicos):
+	qtdes = [0]*len(climasUnicos)
+
+	for elem in tab:
+		if elem:
+			#elem.pop(0)
+			#print (elem)
+			clima = getClima(elem[1:len(elem)], vetorClimaEstados, climasUnicos)
+			qtdes[clima] += 1
+	
+	maior = 0
+
+	for i in range(len(qtdes)):
+		#print (qtdes[i])
+		if qtdes[i] > qtdes[maior]:
+			maior = i
+	
+	return maior
 
 '''def getClimaAgrupamento(tab, vetorClimaEstados, climasUnicos):
 	climas = vetorClimaEstados
